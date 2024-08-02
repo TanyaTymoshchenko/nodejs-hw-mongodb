@@ -1,22 +1,19 @@
-import { ctrlWrapper } from '../utils/ctrlWrapper.js';
+import express from 'express';
 import {
-  findContactsController,
-  findContactByIdController,
+  getContacts,
+  getContactById,
   createContactController,
+  updateContactController,
   deleteContactController,
-  upsertContactController,
-  patchContactController
-} from '../controllers/contacts.js';
-import express from "express";
+} from '../controllers/contactsController.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 const router = express.Router();
-const jsonParser = express.json();
 
-router.get('/', ctrlWrapper(findContactsController));
-router.get('/:contactId', ctrlWrapper(findContactByIdController));
-router.post('/', jsonParser, ctrlWrapper(createContactController));
+router.get('/', ctrlWrapper(getContacts));
+router.get('/:contactId', ctrlWrapper(getContactById));
+router.post('/', ctrlWrapper(createContactController));
+router.patch('/:contactId', ctrlWrapper(updateContactController));
 router.delete('/:contactId', ctrlWrapper(deleteContactController));
-router.put('/:contactId', jsonParser, ctrlWrapper(upsertContactController));
-router.patch('/:contactId', jsonParser, ctrlWrapper(patchContactController));
 
 export default router;
