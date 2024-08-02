@@ -1,22 +1,47 @@
-import { ContactsCollection } from '../db/models/contact.js';
+import { ContactsCollection } from '../db/models/contacts.js';
+import { logger } from '../app.js';
 
-export const getAllContacts = async () => {
-  const contacts = await ContactsCollection.find();
-  return {
-    status: 200,
-    message: 'Successfully found contacts!',
-    data: contacts,
-  };
+export const findContacts = async () => {
+  const data = await ContactsCollection.find();
+  return data;
 };
 
-export const getContactById = async (contactId) => {
-  const contact = await ContactsCollection.findById(contactId);
-  if (!contact) {
-    throw new Error('Contact not found');
+export const findContactById = async (id) => {
+  const data = await ContactsCollection.findById(id);
+  return data;
+};
+
+export const createContact = async (newContact) => {
+  const data = await ContactsCollection.create(newContact);
+  return data;
+};
+
+export const deleteContact = async (id) => {
+  const data = await ContactsCollection.findOneAndDelete({
+    _id: id,
+  });
+  return data;
+};
+
+export const upsertContact = async (id, payload, options = {}) => {
+  const rawData = await ContactsCollection.findOneAndUpdate(
+    { _id: id },
+    payload,
+    {
+      new: true,
+      includeResultMetadata: true,
+      ...options,
+    },
+  );
+
+  logger.info(rawData);
+
+  if (!rawData.value) {
+    return null;
   }
+
   return {
-    status: 200,
-    message: `Successfully found contact with id ${contactId}!`,
-    data: contact,
+    contact: rawData.value,
+    isNew: rawData?.lastErrorObject?.upserted,
   };
 };

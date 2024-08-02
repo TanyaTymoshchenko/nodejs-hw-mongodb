@@ -1,9 +1,14 @@
-import { initMongoDB } from './db/initMongoConnection.js';
-import { startServer } from './server.js';
+import { setUpServer } from './server.js';
+import { initMongoConnection } from './db/initMongoConnection.js';
+import { logger } from './app.js';
 
 const bootstrap = async () => {
-  await initMongoDB();
-  startServer();
+  try {
+    await initMongoConnection();
+     setUpServer();
+  } catch(error) {
+    logger.info(error);
+  }
 };
 
 bootstrap();

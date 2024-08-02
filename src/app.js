@@ -1,0 +1,28 @@
+import express from 'express';
+import pino from 'pino';
+import pinoMiddleware from 'pino-http';
+import cors from 'cors';
+import contactsRouter from './routers/contacts.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import {notFoundHandler} from "./middlewares/notFoundHandler.js";
+
+export const logger = pino({
+  transport: {
+    target: 'pino-pretty',
+    options: {
+      colorize: true,
+      translateTime: 'SYS:standard',
+      ignore: 'req,res,hostname,pid',
+      messageFormat: '{msg}',
+    },
+  },
+});
+
+const app = express();
+app.use(pinoMiddleware({ logger }));
+app.use(cors());
+app.use("/contacts",contactsRouter);
+app.use(notFoundHandler);
+app.use(errorHandler);
+
+export default app;
