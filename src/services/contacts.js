@@ -1,47 +1,39 @@
-import { ContactsCollection } from '../db/models/contacts.js';
-import { logger } from '../app.js';
+import Contact from "../models/contacts.js";
 
-export const findContacts = async () => {
-  const data = await ContactsCollection.find();
-  return data;
+export const fetchAllContacts = async () => {
+    const contacts = await Contact.find();
+    return contacts;
 };
 
-export const findContactById = async (id) => {
-  const data = await ContactsCollection.findById(id);
-  return data;
+export const fetchContactById = async (contactId) => {
+    const contact = await Contact.findById(contactId);
+    return contact;
 };
 
-export const createContact = async (newContact) => {
-  const data = await ContactsCollection.create(newContact);
-  return data;
+export const createContact = async (contactData) => {
+    try {
+        const newContact = new Contact(contactData);
+        await newContact.save();
+        return newContact;
+    } catch (error) {
+        console.error('Error while creating a new contact:', error);
+    }
 };
 
-export const deleteContact = async (id) => {
-  const data = await ContactsCollection.findOneAndDelete({
-    _id: id,
-  });
-  return data;
+export const updateContact = async (contactId, contactData) => {
+    try {
+        const updatedContact = await Contact.findByIdAndUpdate(contactId, contactData, { new: true });
+        return updatedContact;
+    } catch (error) {
+        console.error(`Error while updating contact with id ${contactId}:`, error);
+    }
 };
 
-export const upsertContact = async (id, payload, options = {}) => {
-  const rawData = await ContactsCollection.findOneAndUpdate(
-    { _id: id },
-    payload,
-    {
-      new: true,
-      includeResultMetadata: true,
-      ...options,
-    },
-  );
-
-  logger.info(rawData);
-
-  if (!rawData.value) {
-    return null;
-  }
-
-  return {
-    contact: rawData.value,
-    isNew: rawData?.lastErrorObject?.upserted,
-  };
+export const deleteContact = async (contactId) => {
+    try {
+        const deletedContact = await Contact.findByIdAndDelete(contactId);
+        return deletedContact;
+    } catch (error) {
+        console.error(`Error while deleting contact with id ${contactId}:`, error);
+    }
 };
