@@ -21,11 +21,11 @@ export const loginUser = async (userData) => {
   if (!user) {
     throw createHttpError(401, 'User with the give email not found.');
   }
-  const isCorrectPassowrd = await bcrypt.compare(
+  const isCorrectPassword = await bcrypt.compare(
     userData.password,
     user.password,
   );
-  if (!isCorrectPassowrd) {
+  if (!isCorrectPassword) {
     throw createHttpError(401, 'Incorrect password');
   }
 
