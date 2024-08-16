@@ -1,8 +1,17 @@
 import bcrypt from 'bcrypt';
 import createHttpError from 'http-errors';
+import jwt from 'jsonwebtoken';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+import Handlebars from 'handlebars';
+import { env } from '../utils/env.js';
 import { User } from '../db/models/user.js';
-import { Session} from '../db/models/session.js';
+import { Session } from '../db/models/session.js';
 import { createSession } from './utils.js';
+import { sendEmail } from '../utils/sendMail.js';
+import { SMTP } from '../constants/index.js';
+import { TEMPLATES_DIR } from '../constants/index.js';
+
 
 export const registerUser = async (userData) => {
   const alreadyExistingUser = await User.findOne({ email: userData.email });
@@ -21,15 +30,15 @@ export const loginUser = async (userData) => {
   if (!user) {
     throw createHttpError(401, 'User with the give email not found.');
   }
-  const isCorrectPassword = await bcrypt.compare(
+  const isCorrectPassowrd = await bcrypt.compare(
     userData.password,
     user.password,
   );
-  if (!isCorrectPassword) {
+  if (!isCorrectPassowrd) {
     throw createHttpError(401, 'Incorrect password');
   }
 
-  Session.deleteOne({
+  await Session.deleteOne({
     userId: user._id,
   });
 
@@ -54,7 +63,7 @@ export const refreshUsersSession = async ({ refreshToken, userId }) => {
 
   const newSession = createSession(session.userId);
   await Session.deleteOne({
-    _id: userId,
+    userId,
     refreshToken,
   });
 
@@ -62,6 +71,86 @@ export const refreshUsersSession = async ({ refreshToken, userId }) => {
 };
 
 
+export const logOut = (sessionId) => Session.deleteOne({ _id: sessionId });
 
-export const logOut = (sessionId) =>
-  Session.deleteOne({ _id: sessionId });
+
+export const requestResetEmail = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createHttpError(404, 'User not found');
+  }
+
+  const resetToken = jwt.sign(
+    {
+      sub: user._id,
+      email,
+    },
+    env('JWT_SECRET'),
+    {
+      expiresIn: '5m',
+    },
+  );
+
+  const resetPasswordTemplatePath = path.join(
+    TEMPLATES_DIR,
+    'reset-password-email.html',
+  );
+
+  const resetPasswordTemplateSource = (
+    await fs.readFile(resetPasswordTemplatePath)
+  ).toString();
+
+  const resetPasswordTemplate = Handlebars.compile(resetPasswordTemplateSource);
+  const html = resetPasswordTemplate({
+    name: user.name,
+    link: `${env('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+  });
+
+  const messageContent = {
+    from: env(SMTP.SMTP_FROM),
+    to: email,
+    subject: 'Reset password',
+    html,
+  };
+
+  try {
+    await sendEmail(messageContent);
+  } catch {
+    throw createHttpError(
+      500,
+      'Failed to send the email, please try again later.',
+    );
+  }
+};
+
+
+export const resetPassword = async (userData) => {
+  const { password, token } = userData;
+
+  let entries;
+
+  try {
+    entries = jwt.verify(token, env('JWT_SECRET'));
+  } catch (error) {
+    if (error instanceof Error)
+      throw createHttpError(401, 'Token is expired or invalid');
+    throw error;
+  }
+
+  const user = await User.findOne({
+    _id: entries.sub,
+    email: entries.email,
+  });
+
+  if (!user) throw createHttpError(404, 'User not found');
+
+  const encryptedPassword = await bcrypt.hash(password, 10);
+
+
+  await User.updateOne(
+    {
+      _id: user._id,
+    },
+    { password: encryptedPassword },
+  );
+};

@@ -6,6 +6,7 @@ import routers from './routers/index.js';
 import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/errorHandler.js';
 import {notFoundHandler} from "./middlewares/notFoundHandler.js";
+import { UPLOAD_DIR } from './constants/index.js';
 
 export const logger = pino({
   transport: {
@@ -20,6 +21,7 @@ export const logger = pino({
 });
 
 const app = express();
+app.use("/uploads", express.static(UPLOAD_DIR));
 app.use(pinoMiddleware({ logger }));
 app.use(cors());
 app.use(cookieParser());
