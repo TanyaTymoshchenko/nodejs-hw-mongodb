@@ -1,3 +1,4 @@
+
 import { ContactsCollection } from '../db/models/contacts.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
 
@@ -66,7 +67,7 @@ export const deleteContact = async (contactId, userId) => {
   return data;
 };
 
-export const upsertContact = async (id, payload, options = {}, userId) => {
+export const upsertContact = async (id, userId, payload, options = {}) => {
   const rawData = await ContactsCollection.findOneAndUpdate(
     { _id: id, userId },
     payload,
