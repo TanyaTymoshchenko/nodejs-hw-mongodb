@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+<<<<<<< Updated upstream
 export const createContactValidationSchema = Joi.object({
   name: Joi.string().min(3).max(20).required().messages({
     'string.base': 'Username should be a string',
@@ -54,4 +55,21 @@ export const updateContactValidationSchema = Joi.object({
   //   'string.base': 'UserId should be a string',
   //   'any.required': 'Username is required',
   // }),
+=======
+export const createContactSchema = Joi.object({
+  name: Joi.string().min(3).max(20).required(),
+  phoneNumber: Joi.string().min(3).max(20).required(),
+  email: Joi.string().email(),
+  isFavourite: Joi.boolean(),
+  contactType: Joi.string().valid('work', 'home', 'personal').required(),
+  // userId: Joi.string().required(),
+});
+
+export const updateContactSchema = Joi.object({
+  name: Joi.string().min(3).max(20),
+  phoneNumber: Joi.string().min(3).max(20),
+  email: Joi.string().email(),
+  isFavourite: Joi.boolean(),
+  contactType: Joi.string().valid('work', 'home', 'personal'),
+>>>>>>> Stashed changes
 });

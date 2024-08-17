@@ -1,76 +1,80 @@
 import {
   registerUser,
   loginUser,
-  logOut,
+  logoutUser,
   refreshUsersSession,
 } from '../services/auth.js';
-import { setupCookies } from './utils.js';
-
+import { ONE_DAY } from '../constants/index.js';
 
 export const registerUserController = async (req, res) => {
-  const { name, email, password } = req.body;
-  const userData = {
-    name,
-    email,
-    password,
-  };
-
-  const createdUser = await registerUser(userData);
+  const user = await registerUser(req.body);
 
   res.status(201).json({
     status: 201,
-    message: 'Successfully registered the user',
-    data: createdUser,
+    message: 'Successfully registered a user!',
+    data: user,
   });
 };
-
 
 export const loginUserController = async (req, res) => {
-  const { email, password } = req.body;
-  const userData = {
-    email,
-    password,
-  };
-  const session = await loginUser(userData);
+  const session = await loginUser(req.body);
 
-  setupCookies(res, session);
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
 
-  res.status(200).json({
+  res.json({
     status: 200,
-    message: 'Successfully logged in the user',
+    message: 'Successfully logged in an user!',
     data: {
       accessToken: session.accessToken,
     },
   });
 };
 
-
-export const refreshUserSessionController = async (req, res) => {
-  const session = await refreshUsersSession({
-    userId: req.cookies.userId,
-    refreshToken: req.cookies.refreshToken,
-  });
-
-  setupCookies(res, session);
-
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully refreshed the session',
-    data: {
-      accessToken: session.accessToken,
-    },
-  });
-};
-
-
-export const logOutController = async (req, res) => {
-  const { userId } = req.cookies;
-  if (userId) {
-    await logOut(userId);
+export const logoutUserController = async (req, res) => {
+  if (req.cookies.sessionId) {
+    await logoutUser(req.cookies.sessionId);
   }
 
-  res.clearCookie('userId');
+  res.clearCookie('sessionId');
   res.clearCookie('refreshToken');
 
   res.status(204).send();
+<<<<<<< Updated upstream
+=======
+};
+
+const setupSession = (res, session) => {
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + ONE_DAY),
+  });
+};
+
+export const refreshUserSessionController = async (req, res) => {
+  const session = await refreshUsersSession({
+    sessionId: req.cookies.sessionId,
+    refreshToken: req.cookies.refreshToken,
+  });
+
+  setupSession(res, session);
+
+  res.json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: {
+      accessToken: session.accessToken,
+    },
+  });
+>>>>>>> Stashed changes
 };

@@ -1,5 +1,6 @@
-import { setUpServer } from './server.js';
+import { setupServer } from './server.js';
 import { initMongoConnection } from './db/initMongoConnection.js';
+<<<<<<< Updated upstream
 import { logger } from './app.js';
 
 const bootstrap = async () => {
@@ -12,3 +13,8 @@ const bootstrap = async () => {
 };
 
 bootstrap();
+=======
+
+setupServer();
+initMongoConnection();
+>>>>>>> Stashed changes

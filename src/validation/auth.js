@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+<<<<<<< Updated upstream
 const authSchemaBase = {
   email: Joi.string().email().required().messages({
     'string.base': 'Email should me a string',
@@ -26,3 +27,15 @@ export const registerUserSchema = Joi.object({
 });
 
 export const loginUserSchema = Joi.object(authSchemaBase);
+=======
+export const registerUserSchema = Joi.object({
+  name: Joi.string().min(3).max(20).required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
+
+export const loginUserSchema = Joi.object({
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+});
+>>>>>>> Stashed changes
