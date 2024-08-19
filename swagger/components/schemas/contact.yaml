@@ -7,29 +7,29 @@ required:
   - userId
 properties:
   _id:
-    description: 'Contacts id'
+    description: 'Contact id'
     type: string
-    example: '65e4decdd286b30065d54af9'
+    example: '95e4decdd286b30060d54af9'
   name:
-    description: 'Contacts name'
+    description: 'Contact name'
     type: string
-    example: 'John Dorian'
+    example: 'Richard Warrior'
   phoneNumber:
-    description: 'Contacts phone number'
+    description: 'Contact phone number'
     type: number
-    example: 8494358395
+    example: 3124358395
   email:
-    description: 'Contacts email'
+    description: 'Contact email'
     type: string
     default: 'user@gmail.com'
-    example: 'john.dorian@example.com'
+    example: 'richard.warrior@example.com'
   isFavourite:
     description: 'Shows if the contact is marked as a favorite'
     type: boolean
     default: false
     example: false
   contactType:
-    description: 'Contacts type'
+    description: 'Contact type'
     type: string
     enum: ['work', 'home', 'personal']
     default: 'personal'
@@ -37,18 +37,18 @@ properties:
   userId:
     description: 'Identifier of the user'
     type: string
-    example: 60d21b4667d0d8992e610c88
+    example: 40d21b4667d0d8992e610c88
   photo:
-    description: "Link to the contact's photo"
+    description: 'user photo link'
     type: string
     example: binary
   createdAt:
     description: 'Time when the contact was added'
     type: string
     format: date-time
-    example: '2023-08-02T10:20:30Z'
+    example: '2024-08-02T10:20:30Z'
   updatedAt:
     description: 'Time when the contact was last updated'
     type: string
     format: date-time
-    example: '2023-08-02T10:20:30Z'
+    example: '2024-08-02T10:20:30Z'

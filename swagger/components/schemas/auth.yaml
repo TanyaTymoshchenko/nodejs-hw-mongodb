@@ -6,24 +6,24 @@ required:
 properties:
   name:
     type: string
-    description: 'Users name'
-    example: 'John Dorian'
+    description: 'User name'
+    example: 'Richard Warrior'
   email:
-    description: 'Users email'
+    description: 'User email'
     type: string
     default: 'user@gmail.com'
-    example: 'john.doe@example.com'
+    example: 'richard.warrior@example.com'
   password:
     type: string
-    description: "User's password"
-    example: 'user001'
+    description: 'User password'
+    example: '123456789'
   createdAt:
     description: 'Time when the user was registered'
     type: string
     format: date-time
-    example: '2023-08-02T10:20:30Z'
+    example: '2024-08-02T10:20:30Z'
   updatedAt:
     description: 'Time when the user was last updated'
     type: string
     format: date-time
-    example: '2023-08-02T10:20:30Z'
+    example: '2024-08-02T10:20:30Z'

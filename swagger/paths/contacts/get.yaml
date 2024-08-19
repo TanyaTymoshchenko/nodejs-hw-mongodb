@@ -1,6 +1,6 @@
 tags:
   - Contacts
-summary: Get list of contacts
+summary: Get list of all contacts
 operationId: getContacts
 description: 'Get list of all contacts'
 security:
@@ -8,7 +8,7 @@ security:
 parameters:
   - in: query
     name: page
-    description: Page numbering
+    description: Pagination
     required: false
     schema:
       type: integer
