@@ -6,10 +6,10 @@ required:
 properties:
   name:
     type: string
-    description: "User's name"
-    example: 'John Doe'
+    description: 'Users name'
+    example: 'John Dorian'
   email:
-    description: "User's email"
+    description: 'Users email'
     type: string
     default: 'user@gmail.com'
     example: 'john.doe@example.com'
