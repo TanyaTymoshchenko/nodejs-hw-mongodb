@@ -1,10 +1,10 @@
-description: Creates a contact
+description: Successfully created a contact!
 content:
   application/json:
     schema:
       type: object
       required:
-        - statu
+        - status
         - message
         - data
       properties:
