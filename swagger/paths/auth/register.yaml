@@ -1,12 +1,12 @@
 tags:
   - Auth
-summary: Registering a new user
+summary: New user registration
 operationId: registerUser
 description: 'Register a new user'
 security:
   - bearerAuth: []
 requestBody:
-  description: User registration data
+  description: User registration info
   required: true
   content:
     application/json:
@@ -15,18 +15,18 @@ requestBody:
         properties:
           name:
             type: string
-            description: "User's name"
-            example: 'John Doe'
+            description: 'User name'
+            example: 'Richard Warrior'
           email:
             type: string
-            description: "User's email address"
+            description: 'User email address'
             format: email
             uniqueItems: true
-            example: 'john.doe@example.com'
+            example: 'richard.warrior@example.com'
           password:
             type: string
-            description: "User's password"
-            example: 'user001'
+            description: 'User password'
+            example: '123456789'
 responses:
   '201':
     description: Successfully registered a new user

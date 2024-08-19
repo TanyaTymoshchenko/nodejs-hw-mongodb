@@ -1,4 +1,4 @@
-description: Successfully created a contact!
+description: Unauthorized error
 content:
   application/json:
     schema:
@@ -10,10 +10,15 @@ content:
       properties:
         status:
           type: integer
-          example: 201
+          example: 401
         message:
           type: string
-          example: Successfully created a contact!
+          example: Unauthorized Error
         data:
           type: object
-          $ref: '../../components/schemas/contact.yaml'
+          required:
+            - message
+          properties:
+            message:
+              type: string
+              example: 'Access token is not valid'
